@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 type MaybePromise<T> = Promise<T> | T;
 
-export interface Actions {
+export type Actions = {
   [key: string]: (...args: any[]) => MaybePromise<any>;
 }
 

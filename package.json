@@ -1,6 +1,6 @@
 {
   "name": "react-state-action-hooks",
-  "version": "0.1.0-alpha.1",
+  "version": "0.1.0-alpha.2",
   "main": "dist/index.js",
   "module": "dist/react-state-action-hooks.esm.js",
   "typings": "dist/index.d.ts",

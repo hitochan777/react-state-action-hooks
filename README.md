@@ -1,1 +1,92 @@
 # react-state-action-hooks
+
+React hooks for managing state with (async) actions.
+
+## Installation
+
+```bash
+npm install react-state-action-hooks # for npm users
+yarn add react-state-action hooks # for yarn users
+```
+
+## Usage
+Demo is available on [CodeSandbox](https://codesandbox.io/embed/react-typescript-thsdb?fontsize=14).
+
+First import `useActionState` react hook and `ActionDefs` which is a type definition.
+
+```typescript
+import { useActionState, ActionDefs } from "react-state-action-hooks";
+```
+
+Define a state and action definition types (or interfaces).
+State can be anything from number or string to nested object.
+`Actions` is an object each of whose keys is a (async) function that takes arbitrary number of parameters.
+
+```typescript
+interface State {
+  count: number
+}
+
+type Actions = {
+  incrementBy: (delta: number) => void;
+  asyncReset: (interval: number) => Promise<void>;
+  decrementBy: (delta: number) => void;
+}
+```
+
+Then you can define the actual initial state and action definitions that comform to the types (interfaces) defined above.
+Action definition (`actionDefs` in the code below) is an object that has exactly the same keys action `Actions`, but the corresponding value is a function that returns function.
+The parameters of the outer function is the same as the ones defined in `Actions`.
+The parameters of the innner function is `(state: State, actions: Actions)` and it should return (acynchronously)
+a new state or nothing. You can also call as many other acitons as you want inside the action.
+
+```typescript
+const initialState: State = {
+  count: 0
+}
+
+const actionDefs: ActionDefs<State, Actions, {}> = {
+  incrementBy: (delta: number) => (state: State) => ({...state, count: state.count + delta}),
+  asyncReset: (interval: number) => (state: State) => {
+    return new Promise( resolve => {
+      setTimeout(() => {
+        resolve({
+          ...state,
+           count: 0
+        })
+      }, interval)
+    });
+  },
+  decrementBy: (delta: number) => (state: State, actions: Actions) => {
+    actions.incrementBy(-1);  
+  }
+}
+```
+
+Then finally in a React stateless component, you can use `state` and `actions` by invoking `useActionState`.
+
+```tsx
+const Counter = () => {
+  const { state, actions} = useActionState<State, Actions>(initialState, actionDefs, {})
+  return (<div>
+    <span>{state.count}</span>
+    <button onClick={() => {actions.asyncReset(1000)}}>Reset after 1 sec</button>
+    <button onClick={() => {actions.incrementBy(1)}}>+1</button>
+    <button onClick={() => {actions.incrementBy(2)}}>+2</button>
+    <button onClick={() => {actions.decrementBy(1)}}>-1</button>
+  </div>)
+}
+```
+
+## Advanced Usage
+TBW
+
+## Contribution
+Any kinds of contributions are welcome!
+Just submit issues or pull requests!
+
+## Author
+Hitoshi Otsuki
+
+## License
+MIT

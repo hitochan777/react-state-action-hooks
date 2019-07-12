@@ -9,7 +9,7 @@ npm install react-state-action-hooks # for npm users
 yarn add react-state-action hooks # for yarn users
 ```
 
-## Usage
+## Basic Usage
 Demo is available on [CodeSandbox](https://codesandbox.io/embed/react-typescript-thsdb?fontsize=14).
 
 First import `useActionState` react hook and `ActionDefs` which is a type definition.
@@ -67,7 +67,7 @@ Then finally in a React stateless component, you can use `state` and `actions` b
 
 ```tsx
 const Counter = () => {
-  const { state, actions} = useActionState<State, Actions>(initialState, actionDefs, {})
+  const { state, actions } = useActionState<State, Actions>(initialState, actionDefs)
   return (<div>
     <span>{state.count}</span>
     <button onClick={() => {actions.asyncReset(1000)}}>Reset after 1 sec</button>
@@ -79,7 +79,39 @@ const Counter = () => {
 ```
 
 ## Advanced Usage
-TBW
+
+### Using context
+
+`useActionState` can take the third parameter `context` which should be a key-value object, to which
+you can pass whatever values you want to have access to in an action.
+The context then becomes available as the third parameter of the returned function in an action definition.
+Here is an example:
+
+```tsx
+interfaces Context {
+  apolloClient: ApolloClient<any>
+}
+
+const context = {
+  apolloClient
+}
+
+const Counter = () => {
+  const { state, actions} = useActionState<State, Actions, Context>(initialState, actionDefs, context)
+  /* lines below omitted */
+}
+```
+
+Then the context becomes available in all the functions in action definition.
+
+```tsx
+const actionDefs: ActionDefs<State, Actions, Context> = {
+  someAction: () => async (state: State, actions: Actions, context: Context) => {
+    const { apolloClient } = context
+    /* do something with apolloClient */
+  }
+}
+```
 
 ## Contribution
 Any kinds of contributions are welcome!

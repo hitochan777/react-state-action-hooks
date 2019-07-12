@@ -1,4 +1,7 @@
 # react-state-action-hooks
+[![CircleCI](https://circleci.com/gh/hitochan777/react-state-action-hooks.svg?style=svg)](https://circleci.com/gh/hitochan777/react-state-action-hooks)
+![npm](https://img.shields.io/npm/v/react-state-action-hooks.svg)
+[![code style: prettier](https://img.shields.io/badge/code_style-prettier-ff69b4.svg?style=flat-square)](https://github.com/prettier/prettier)
 
 React hooks for managing state with (async) actions.
 
@@ -88,7 +91,7 @@ The context then becomes available as the third parameter of the returned functi
 Here is an example:
 
 ```tsx
-interfaces Context {
+interface Context {
   apolloClient: ApolloClient<any>
 }
 
@@ -97,7 +100,7 @@ const context = {
 }
 
 const Counter = () => {
-  const { state, actions} = useActionState<State, Actions, Context>(initialState, actionDefs, context)
+  const { state, actions } = useActionState<State, Actions, Context>(initialState, actionDefs, context)
   /* lines below omitted */
 }
 ```

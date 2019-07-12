@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import React, { useState, useContext } from 'react';
 
 type MaybePromise<T> = Promise<T> | T;
 
-export type Actions = {
+export interface Actions {
   [key: string]: (...args: any[]) => MaybePromise<any>;
 }
 
@@ -59,5 +59,55 @@ export const useActionState = <
   return {
     state,
     actions,
+  };
+};
+
+type Context<S, A extends Actions> = { state: S; actions: A };
+
+type Bundle<S, A extends Actions> = {
+  context: React.Context<Context<S, A>>;
+  useStateValue: () => Context<S, A>;
+  StateProvider: any;
+};
+
+export const createBundle = <S, A extends Actions>(): Bundle<S, A> => {
+  const StateContext = React.createContext<{
+    state: S;
+    actions: A;
+  }>({
+    state: null as any,
+    actions: null as any,
+  });
+
+  const useStateValue = () => useContext(StateContext);
+
+  const StateProvider = ({
+    initialState,
+    actionDefs,
+    context,
+    children,
+  }: {
+    initialState: S;
+    actionDefs: A;
+    context: Context<S, A>;
+    children: any;
+  }) => {
+    const { state, actions } = useActionState<S, A, Context<S, A>>(
+      initialState,
+      actionDefs,
+      context
+    );
+
+    return (
+      <StateContext.Provider value={{ state, actions }}>
+        {children}
+      </StateContext.Provider>
+    );
+  };
+
+  return {
+    context: StateContext,
+    useStateValue,
+    StateProvider,
   };
 };

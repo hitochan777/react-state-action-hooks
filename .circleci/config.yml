@@ -2,7 +2,7 @@ version: 2
 jobs:
   test-job:
     docker:
-        - image: node:12
+      - image: node:12
 
     working_directory: ~/repo
 
@@ -12,9 +12,9 @@ jobs:
       # Download and cache dependencies
       - restore_cache:
           keys:
-          - v1-dependencies-{{ checksum "yarn.lock" }}
-          # fallback to using the latest cache if no exact match is found
-          - v1-dependencies-
+            - v1-dependencies-{{ checksum "yarn.lock" }}
+            # fallback to using the latest cache if no exact match is found
+            - v1-dependencies-
 
       - run: yarn install
 
@@ -28,7 +28,7 @@ jobs:
 
   release-job:
     docker:
-        - image: node:12
+      - image: node:12
     steps:
       - checkout
       - run:
@@ -49,5 +49,5 @@ workflows:
           requires:
             - test-job
           filters:
-            branches:
-              only: master
+            tags:
+              only: /^v.*/

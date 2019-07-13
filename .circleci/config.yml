@@ -49,5 +49,7 @@ workflows:
           requires:
             - test-job
           filters:
+            branches:
+              ignore: /.*/
             tags:
               only: /^v.*/

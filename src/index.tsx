@@ -20,6 +20,8 @@ export type ActionDefs<
   [K in keyof A]: (...args: Parameters<A[K]>) => MaybeStateReturner<S, A, C>;
 };
 
+type Callback<S> = (previousState: S, newState: S) => void;
+
 export const useActionState = <
   S,
   A extends Actions,
@@ -27,7 +29,8 @@ export const useActionState = <
 >(
   initialState: S,
   actionDefs: ActionDefs<S, A, C>,
-  context: C
+  context: C,
+  callback?: Callback<S>
 ): { state: S; actions: A } => {
   const [state, setState] = useState(initialState);
   let futureState: S = state;
@@ -37,7 +40,9 @@ export const useActionState = <
       futureState = result;
       setState(previousState => {
         const newState = { ...previousState, ...futureState };
-        console.debug('UPDATE: ', previousState, newState);
+        if (callback) {
+          callback(previousState, newState);
+        }
         return newState;
       });
     }
@@ -85,17 +90,20 @@ export const createBundle = <S, A extends Actions>(): Bundle<S, A> => {
     initialState,
     actionDefs,
     context,
+    callback,
     children,
   }: {
     initialState: S;
     actionDefs: A;
     context: Context<S, A>;
+    callback?: Callback<S>;
     children: any;
   }) => {
     const { state, actions } = useActionState<S, A, Context<S, A>>(
       initialState,
       actionDefs,
-      context
+      context,
+      callback
     );
 
     return (

@@ -9,3 +9,5 @@ dist
 
 # Since we use yarn
 package-lock.json
+
+coverage

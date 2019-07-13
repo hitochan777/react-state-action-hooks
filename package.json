@@ -4,20 +4,31 @@
   "main": "dist/index.js",
   "module": "dist/react-state-action-hooks.esm.js",
   "typings": "dist/index.d.ts",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hitochan777/react-state-action-hooks.git"
+  },
+  "keywords": [
+    "react",
+    "hooks",
+    "state management",
+    "state"
+  ],
   "files": [
     "dist"
   ],
   "scripts": {
     "start": "tsdx watch",
     "build": "tsdx build",
-    "test": "tsdx test --env=jsdom"
+    "test": "tsdx test --env=jsdom",
+    "lint": "npmPkgJsonLint ."
   },
   "peerDependencies": {
     "react": ">=16"
   },
   "husky": {
     "hooks": {
-      "pre-commit": "pretty-quick --staged"
+      "pre-commit": "pretty-quick --staged && npmPkgJsonLint ."
     }
   },
   "prettier": {
@@ -33,6 +44,8 @@
     "@types/react": "^16.8.4",
     "@types/react-dom": "^16.8.4",
     "husky": "^3.0.0",
+    "npm-package-json-lint": "^3.7.0",
+    "npm-package-json-lint-config-default": "^2.0.0",
     "prettier": "^1.18.2",
     "pretty-quick": "^1.11.1",
     "react": "^16.9.0-alpha.0",
